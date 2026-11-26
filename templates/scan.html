@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Fraud Detector - APK Security Scanner</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #07111f;
+            color: white;
+            line-height: 1.6;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            width: 100%;
+            background: #0a1628;
+            border-bottom: 1px solid #1d3552;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #38bdf8;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            color: #38bdf8;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            width: 90%;
+            max-width: 1150px;
+            margin: 45px auto;
+        }
+
+        /* ================= HEADING ================= */
+
+        .heading {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .heading h1 {
+            font-size: 44px;
+            margin-bottom: 12px;
+        }
+
+        .heading h1 span {
+            color: #38bdf8;
+        }
+
+        .heading p {
+            color: #94a3b8;
+            font-size: 17px;
+        }
+
+        /* ================= UPLOAD SECTION ================= */
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 25px;
+        }
+
+        .box {
+            background: #0d1d31;
+            border: 1px solid #1e3a5f;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .upload-box {
+            text-align: center;
+            border: 2px dashed #0284c7;
+        }
+
+        .upload-icon {
+            font-size: 65px;
+            margin-bottom: 15px;
+        }
+
+        .upload-box h2 {
+            margin-bottom: 12px;
+        }
+
+        .upload-box p {
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+
+        /* ================= FILE INPUT ================= */
+
+        input[type="file"] {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            background: #07111f;
+            color: white;
+            border: 1px solid #334155;
+            border-radius: 8px;
+        }
+
+        /* ================= BUTTON ================= */
+
+        .scan-button {
+            width: 100%;
+            padding: 16px;
+            margin-top: 18px;
+            border: none;
+            border-radius: 8px;
+            background: #0284c7;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .scan-button:hover {
+            background: #0369a1;
+        }
+
+        /* ================= WHAT WE CHECK ================= */
+
+        .box h2 {
+            margin-bottom: 18px;
+        }
+
+        .info-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #263b54;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-item strong {
+            font-size: 16px;
+        }
+
+        .info-item p {
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        /* ================= STATIC ANALYSIS ================= */
+
+        .safe-box {
+            margin-top: 25px;
+            padding: 25px;
+            background: #062e25;
+            border: 1px solid #047857;
+            border-radius: 14px;
+        }
+
+        .safe-box h3 {
+            color: #6ee7b7;
+            margin-bottom: 8px;
+        }
+
+        .safe-box p {
+            color: #a7f3d0;
+        }
+
+        /* ================= ERROR ================= */
+
+        .error {
+            margin-top: 25px;
+            padding: 18px;
+            background: #7f1d1d;
+            border: 1px solid #ef4444;
+            border-radius: 10px;
+            color: #fecaca;
+        }
+
+        /* ================= RESULT ================= */
+
+        .results {
+            margin-top: 50px;
+        }
+
+        .results-title {
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+
+        /* ================= FILE INFORMATION ================= */
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .result-card {
+            background: #0d1d31;
+            border: 1px solid #1e3a5f;
+            border-radius: 14px;
+            padding: 25px;
+        }
+
+        .result-card small {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .result-card p {
+            margin-top: 10px;
+            color: #e2e8f0;
+            word-break: break-word;
+        }
+
+        /* ================= SCORE ================= */
+
+        .score-box {
+            margin-top: 25px;
+            background: #0d1d31;
+            border: 1px solid #1e3a5f;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .score-title {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .score {
+            font-size: 85px;
+            font-weight: bold;
+            color: #38bdf8;
+            line-height: 1;
+        }
+
+        .score-out-of {
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .risk {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 28px;
+            border-radius: 30px;
+            background: #064e3b;
+            color: #6ee7b7;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* ================= SCORE LEVEL MEANING ================= */
+
+        .risk-explanation {
+            margin-top: 25px;
+            background: #0d1d31;
+            border: 1px solid #1e3a5f;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .risk-explanation h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .risk-description {
+            color: #94a3b8;
+            margin-bottom: 25px;
+        }
+
+        .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .risk-table th {
+            background: #07111f;
+            color: #38bdf8;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        .risk-table td {
+            padding: 16px;
+            border-bottom: 1px solid #263b54;
+            color: #cbd5e1;
+        }
+
+        .risk-table tr:hover {
+            background: #13263d;
+        }
+
+        .risk-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ================= IMPORTANT NOTE ================= */
+
+        .important-note {
+            margin-top: 25px;
+            padding: 20px;
+            background: #3a2410;
+            border-left: 4px solid #f97316;
+            border-radius: 8px;
+            color: #fed7aa;
+        }
+
+        /* ================= SECURITY CHECKS ================= */
+
+        .checks {
+            margin-top: 25px;
+            background: #0d1d31;
+            border: 1px solid #1e3a5f;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .checks h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .check-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #263b54;
+            color: #cbd5e1;
+        }
+
+        .check-item:last-child {
+            border-bottom: none;
+        }
+
+        /* ================= HASH ================= */
+
+        .hash {
+            margin-top: 25px;
+            background: #0d1d31;
+            border: 1px solid #1e3a5f;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .hash h3 {
+            margin-bottom: 12px;
+        }
+
+        .hash-value {
+            padding: 15px;
+            background: #07111f;
+            border: 1px solid #263b54;
+            border-radius: 8px;
+            color: #38bdf8;
+            word-break: break-all;
+            font-family: monospace;
+        }
+
+        /* ================= BOTTOM BUTTONS ================= */
+
+        .bottom-buttons {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .home-button {
+            display: inline-block;
+            margin: 5px;
+            padding: 13px 24px;
+            background: #0284c7;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .home-button:hover {
+            background: #0369a1;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            margin-top: 70px;
+            padding: 30px;
+            text-align: center;
+            background: #050b14;
+            color: #64748b;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 800px) {
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .heading h1 {
+                font-size: 32px;
+            }
+
+            .risk-table {
+                font-size: 13px;
+            }
+
+            .risk-table th,
+            .risk-table td {
+                padding: 10px;
+            }
+
+            .score {
+                font-size: 65px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav>
+
+    <div class="logo">
+        🛡️ <span>Fraud</span> Detector
+    </div>
+
+    <a href="/">
+        ← Home
+    </a>
+
+</nav>
+
+
+<!-- ================= MAIN CONTAINER ================= -->
+
+<div class="container">
+
+
+    <!-- ================= PAGE HEADING ================= -->
+
+    <div class="heading">
+
+        <h1>
+            APK <span>Security Scanner</span>
+        </h1>
+
+        <p>
+            Analyze Android APK files using static security checks
+        </p>
+
+    </div>
+
+
+    <!-- ================= UPLOAD + CHECKS ================= -->
+
+    <div class="main-grid">
+
+
+        <!-- UPLOAD APK -->
+
+        <div class="box upload-box">
+
+            <div class="upload-icon">
+                📱
+            </div>
+
+            <h2>
+                Upload Your APK
+            </h2>
+
+            <p>
+                Select an Android APK file from your computer.
+                The application will be analyzed without executing it.
+            </p>
+
+
+            <form
+                action="/upload"
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                <input
+                    type="file"
+                    name="apk"
+                    accept=".apk"
+                    required
+                >
+
+
+                <button
+                    type="submit"
+                    class="scan-button"
+                >
+
+                    🔍 Start Security Scan
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- WHAT WE CHECK -->
+
+        <div class="box">
+
+            <h2>
+                🔎 What We Check
+            </h2>
+
+
+            <div class="info-item">
+
+                <strong>
+                    🔐 SHA-256 Fingerprint
+                </strong>
+
+                <p>
+                    A unique SHA-256 fingerprint is generated
+                    for the uploaded APK.
+                </p>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <strong>
+                    📦 APK File Information
+                </strong>
+
+                <p>
+                    Basic APK file information is checked.
+                </p>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <strong>
+                    ⚠️ Suspicious Indicators
+                </strong>
+
+                <p>
+                    Static indicators are checked for possible
+                    security risks.
+                </p>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <strong>
+                    📊 Risk Score
+                </strong>
+
+                <p>
+                    The APK receives a risk score between
+                    0 and 100.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= STATIC ANALYSIS ================= -->
+
+    <div class="safe-box">
+
+        <h3>
+            🛡️ Static Analysis Approach
+        </h3>
+
+        <p>
+            Fraud Detector analyzes the APK without executing
+            the application. This makes the initial analysis
+            safer because the uploaded APK is not launched.
+            The risk score is an automated security assessment
+            and is not a guaranteed malware verdict.
+        </p>
+
+    </div>
+
+
+    <!-- ================= ERROR ================= -->
+
+    {% if error %}
+
+    <div class="error">
+
+        ⚠️ {{ error }}
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================= SECURITY RESULT ================= -->
+
+    {% if filename %}
+
+    <div class="results">
+
+
+        <h2 class="results-title">
+            🔎 Security Analysis Report
+        </h2>
+
+
+        <!-- ================= FILE DETAILS ================= -->
+
+        <div class="result-grid">
+
+
+            <div class="result-card">
+
+                <small>
+                    FILE NAME
+                </small>
+
+                <p>
+                    {{ filename }}
+                </p>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <small>
+                    FILE SIZE
+                </small>
+
+                <p>
+                    {{ file_size }} bytes
+                </p>
+
+            </div>
+
+
+            <div class="result-card">
+
+                <small>
+                    FILE TYPE
+                </small>
+
+                <p>
+                    Android APK
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ================= RISK SCORE ================= -->
+
+        <div class="score-box">
+
+            <div class="score-title">
+                CURRENT SECURITY RISK SCORE
+            </div>
+
+
+            <div class="score">
+                {{ risk_score }}
+            </div>
+
+
+            <div class="score-out-of">
+                Score out of 100
+            </div>
+
+
+            <div class="risk">
+                {{ risk_level }}
+            </div>
+
+        </div>
+
+
+        <!-- ================= SCORE LEVEL MEANING ================= -->
+
+        <div class="risk-explanation">
+
+            <h3>
+                🛡️ Score Level Meaning
+            </h3>
+
+            <p class="risk-description">
+
+                The risk score represents the level of suspicious
+                indicators identified during the static APK analysis.
+
+            </p>
+
+
+            <table class="risk-table">
+
+
+                <tr>
+
+                    <th>
+                        Score
+                    </th>
+
+                    <th>
+                        Level
+                    </th>
+
+                    <th>
+                        Meaning
+                    </th>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            0–20
+                        </strong>
+                    </td>
+
+                    <td>
+                        🟢 Very Low Risk
+                    </td>
+
+                    <td>
+                        No significant suspicious indicators found
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            21–40
+                        </strong>
+                    </td>
+
+                    <td>
+                        🟢 Low Risk
+                    </td>
+
+                    <td>
+                        Few indicators detected
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            41–60
+                        </strong>
+                    </td>
+
+                    <td>
+                        🟡 Medium Risk
+                    </td>
+
+                    <td>
+                        Some suspicious indicators require attention
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            61–80
+                        </strong>
+                    </td>
+
+                    <td>
+                        🟠 High Risk
+                    </td>
+
+                    <td>
+                        Multiple suspicious indicators detected
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            81–100
+                        </strong>
+                    </td>
+
+                    <td>
+                        🔴 Critical Risk
+                    </td>
+
+                    <td>
+                        Strong suspicious indicators detected
+                    </td>
+
+                </tr>
+
+
+            </table>
+
+
+            <div class="important-note">
+
+                <strong>
+                    ⚠️ Important:
+                </strong>
+
+                A higher score means more suspicious indicators
+                were identified. This is a static-analysis
+                assessment and does not guarantee that an APK
+                is safe or malicious.
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= SECURITY CHECKS ================= -->
+
+        <div class="checks">
+
+            <h3>
+                🛡️ Security Checks
+            </h3>
+
+
+            <div class="check-item">
+                ✅ APK file received successfully
+            </div>
+
+
+            <div class="check-item">
+                ✅ SHA-256 fingerprint generated
+            </div>
+
+
+            <div class="check-item">
+                ✅ File extension checked
+            </div>
+
+
+            <div class="check-item">
+                ✅ Basic static indicators analyzed
+            </div>
+
+
+            {% if risk_reasons %}
+
+                {% for reason in risk_reasons %}
+
+                <div class="check-item">
+                    ⚠️ {{ reason }}
+                </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="check-item">
+                    ✅ No basic suspicious indicators found
+                </div>
+
+            {% endif %}
+
+
+        </div>
+
+
+        <!-- ================= SHA-256 ================= -->
+
+        <div class="hash">
+
+            <h3>
+                🔐 SHA-256 Fingerprint
+            </h3>
+
+
+            <div class="hash-value">
+
+                {{ file_hash }}
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= BUTTONS ================= -->
+
+        <div class="bottom-buttons">
+
+            <a
+                href="/"
+                class="home-button"
+            >
+                🏠 Back to Home
+            </a>
+
+
+            <a
+                href="/scan"
+                class="home-button"
+            >
+                🔄 Scan Another APK
+            </a>
+
+        </div>
+
+
+    </div>
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    🛡️ Fraud Detector
+
+    <br>
+
+    Android APK Static Security Analysis Project
+
+</footer>
+
+
+</body>
+
+</html>
